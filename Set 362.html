@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+
+<p>1. write code to find the diameter of tree.http://www.geeksforgeeks.org/diameter-of-a-binary-tree/</p>
+
+<p>2.Search an element in rotated sorted array in optimized wayhttp://www.geeksforgeeks.org/search-an-element-in-a-sorted-and-pivoted-array/</p>
+<br>
+Input  : arr[] = {5, 6, 7, 8, 9, 10, 1, 2, 3};
+         key = 3
+ <br>
+Output : Found at index 8
+
+<br>
+Input  : arr[] = {5, 6, 7, 8, 9, 10, 1, 2, 3};
+         key = 30
+         <br>
+Output : Not found
+<br>
+
+Input : arr[] = {30, 40, 50, 10, 20}
+        key = 10   
+        <br>
+Output : Found at index 3
+<br>
+
+<p>3. Given an array of size n and an integer k, return the of count of distinct numbers in all windows of size k.http://www.geeksforgeeks.org/count-distinct-elements-in-every-window-of-size-k/</p>
+Input:  arr[] = {1, 2, 1, 3, 4, 2, 3};
+            k = 4
+Output:
+3
+4
+4
+3
+
+
+<p>1. count minimum days to rotten orange.http://www.geeksforgeeks.org/minimum-time-required-so-that-all-oranges-become-rotten/</p>
+
+Given a matrix of dimension m*n where each cell in the matrix can have values 0, 1 or 2 which has the following meaning:
+<br>
+0: Empty cell
+<br>
+1: Cells have fresh oranges
+<br>
+2: Cells have rotten oranges 
+So we have to determine what is the minimum time required so that all the oranges become rotten. A rotten orange at index [i,j] can rot other fresh orange at indexes [i-1,j], [i+1,j], [i,j-1], [i,j+1] (up, down, left and right). If it is impossible to rot every orange then simply return -1.
+<br>
+Examples:
+<br>
+Input:  arr[][C] = { {2, 1, 0, 2, 1},
+                     {1, 0, 1, 2, 1},
+                     {1, 0, 0, 2, 1}};
+                     <br>
+Output:
+All oranges can become rotten in 2 time frames.
+<br>
+
+Input:  arr[][C] = { {2, 1, 0, 2, 1},
+                     {0, 0, 1, 2, 1},
+                     {1, 0, 0, 2, 1}};
+                     <br>
+Output:
+All oranges cannot be rotten.
+
+
+<p>2. Merge K sorted arrays in optimized way.http://www.geeksforgeeks.org/merge-k-sorted-arrays/</p>
+
+Given k sorted arrays of size n each, merge them and print the sorted output.
+<br>
+Example:
+<br>
+Input:
+k = 3, n =  4
+arr[][] = { {1, 3, 5, 7},
+            {2, 4, 6, 8},
+            {0, 9, 10, 11}} ;
+<br>
+Output: 0 1 2 3 4 5 6 7 8 9 10 11 
+
+
+<script>
+function task1_1(){
+	// diameter is the max of
+	// diameter of left subtree
+	// diameter of right subtree
+	// longest path in tree
+	var input = {
+		value: 1,
+		left: {
+			value: 2,
+			left: {
+				value: 4
+			},
+			right: {
+				value: 5
+			}
+		},
+		right: {
+			value: 3
+		}
+	}
+
+	return diameter(input);
+
+	function diameter(root){
+		if (!root){
+			return 0;
+		}
+		var leftSubtreeHeight = height(root.left);
+		var rightSubtreeHeight = height(root.right);
+
+		var longestPath = leftSubtreeHeight + rightSubtreeHeight + 1;
+
+		var leftSubtreeDiameter = diameter(root.left);
+		var rightSubtreeDiameter = diameter(root.right);
+
+		var answer = Math.max.apply(Math, [leftSubtreeDiameter, rightSubtreeDiameter, longestPath]);
+
+		return answer;
+	}
+
+	function height(root){
+		if (!root){
+			return 0;
+		}
+
+		var stack = [];
+		var h = 0;
+
+		stack.push(root);
+		stack.push('delimiter');
+
+		while (stack.length){
+			var item = stack.shift();
+			if (item === 'delimiter'){
+				h++;
+				if (stack.length){
+					stack.push('delimiter');
+				}
+				continue;
+			}
+
+			if (item.left){
+				stack.push(item.left);
+			}
+			if (item.right){
+				stack.push(item.right);
+			}
+		}
+
+		return h;
+	}
+}
+
+
+function task1_2(){
+	// find rotation point
+	// do binary search in the left part
+	// do binary search in the right part
+	var input = [5, 6, 7, 8, 9, 10, 1, 2, 3];
+	var key = 3;	
+
+	var rotationPoint = findRotationPoint();
+	var answer = -1;
+
+	if (input[rotationPoint] === key){
+		return rotationPoint;
+	}
+
+	var searchResultInLeftPart = binarySearch(0, rotationPoint - 1, key);
+	if (searchResultInLeftPart !== -1){
+		answer = searchResultInLeftPart + input.length - rotationPoint;
+	} else {		
+		var searchResultInRightPart = binarySearch(rotationPoint + 1, input.length, key);
+		if (searchResultInRightPart !== -1){
+			answer = searchResultInRightPart;
+		}
+	}
+
+	function findRotationPoint(){
+		for (var i = 0; i < input.length - 1; i++){
+			if (input[i] > input[i + 1]){
+				return i + 1;
+			}
+		}
+
+		return -1;
+	}
+
+	function binarySearch(left, right, key){
+		if (left > right) return -1;		
+		var mid = Math.floor((left + right) / 2);
+
+		if (key == input[mid]) { return mid };
+
+		if (input[mid] < key){
+			return binarySearch(mid + 1, right, key);
+		}		
+
+		if (input[mid] > key) {
+			return binarySearch(left, mid - 1, key);
+		}
+
+		return -1;
+	}
+}
+
+function task1_3(){
+	// track count somewhere
+	var input = [1, 2, 1, 3, 4, 2, 3];
+	var k = 4;
+
+	var answer = {
+		dc: 0,
+		tracker: {},
+		push: function(value){
+			if (!this.tracker[value]){
+				this.tracker[value] = 0;
+				this.dc++;
+			}
+
+			this.tracker[value]++;
+		},
+		remove: function(value){
+			if (!this.tracker[value]){
+				this.tracker[value] = 1;
+			}
+
+			this.tracker[value]--;
+			if (!this.tracker[value]){
+				this.dc--;
+			}
+		}
+	}
+
+	for (var i = 0; i <= input.length; i++){
+		if (i >= k){
+			console.log(answer.dc);
+			answer.remove(input[i - k]);
+		}
+
+		answer.push(input[i]);
+	}
+}
+
+function task1_2(){
+	// put all currently rotten oranges to stack
+	// after that add some flag to stack
+	// go through stack and rot near oranges
+	// if flag is reached, increas timeframe counter and push new flag
+	var input = [
+		[2, 1, 0, 2, 1],
+		[1, 0, 1, 2, 1],
+		[1, 0, 0, 2, 1]
+	];
+	
+	rottenOranges(input, 3, 5);
+
+	function rottenOranges(oranges, n, k){
+		var q = [];
+
+		var isValid = function(i, j){
+			var res = (i >= 0 && i < n && j >= 0 && j < k && oranges[i][j] === 1);
+			if (res){
+				oranges[i][j] = 2;
+			}
+			return res;
+		};
+
+		for(var i = 0; i < n; i++){
+			for(var j = 0; j < k; j++){
+				if (oranges[i][j] === 2){
+					q.push({
+						i : i,
+						j : j
+					});
+				}
+			}
+		}
+
+		q.push('frame');
+		var res = 0;
+
+		while(q.length){
+			var o = q.shift();
+			if (o === 'frame'){				
+				if (q.length){					
+					o = q.shift();
+					q.push('frame');
+					res++;
+				}				
+			}
+			var a = isValid(o.i + 1, o.j), 
+				b = isValid(o.i - 1, o.j), 
+				c = isValid(o.i, o.j + 1), 
+				d = isValid(o.i, o.j - 1);
+
+			if (a){
+				q.push({
+					i: o.i + 1,
+					j: o.j
+				});
+			}
+
+			if (b){
+				q.push({
+					i: o.i - 1,
+					j: o.j
+				});
+			}
+
+			if (c){
+				q.push({
+					i: o.i,
+					j: o.j + 1
+				});
+			}
+
+			if (d){
+				q.push({
+					i: o.i,
+					j: o.j - 1
+				});
+			}		
+		}
+
+		return res;
+	}
+}
+
+function task2_2{
+	var k = 3, 
+		n =  4, 
+		input = [
+			[1, 3, 5, 7],
+            [2, 4, 6, 8],
+            [0, 9, 10, 11]
+        ];
+}
+</script>
+</body>
+</html>

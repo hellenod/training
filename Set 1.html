@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+Question 1: Check if a character link list is palindrome or not.
+
+Question 2: A sorted array has been rotated r times to the left. Find r in least possible time.
+
+Question 3: Clone a singly link list whose nodes contain, apart from next pointers, an extra pointer to any random node. The random pointer of a node N could be after N, before N or the node N itself.
+
+<script type="text/javascript">
+	function task1_1(){
+		var node = {
+			val: 'a',
+			next: {
+				val: 'b',
+				next: {
+					val: 'c',
+					next: {
+						val: 'b',
+						next: {
+							val: 'a'
+						}
+					}
+				}
+			}
+		}
+
+		var answer = isPalindrome(node);
+
+		function isPalindrome(head){
+			var node = head, fastNode = node;
+			var stack = [];
+			while(fastNode && fastNode.next){
+				stack.push(node.val);
+				node = node.next;				
+				if (fastNode) fastNode = fastNode.next;
+				if (fastNode) fastNode = fastNode.next;
+			}			
+
+			if (fastNode && !fastNode.next){
+				node = node.next;
+			}
+
+			while(node){
+				var stored = stack.pop();
+				if (node.val !== stored){
+					return false;
+				}
+
+				node = node.next;				
+			}
+
+			return true;
+		}
+	}
+	debugger;
+	task1_1();
+
+	function task1_2(){
+		var input = [25, 26, 27, 28, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24];
+		var answer = binarySearch(0, input.length - 1);
+		
+		function binarySearch(left, right){
+			if (left > right) { return -1 };
+
+			var mid = Math.floor((left + right) / 2);
+
+			if (input[mid] > input[mid + 1]) {
+				return mid + 1;
+			}
+
+			if (input[mid] > input[right]){
+				return binarySearch(mid, right);
+			} else {
+				return binarySearch(left, mid);
+			}
+		}
+	}
+	
+	task1_2();
+</script>
+</body>
+</html>

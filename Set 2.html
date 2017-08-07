@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+Online test(Time): 90 Minutes
+
+20 Objective Questions: Aptitude and basic C objective problems.
+
+2 Subjective Questions:
+
+I.              Given a linked list containing character in each node, segregate its nodes in such a way that all nodes containing a vowel are moved to the end of the linked list. We will have to maintain the order.
+
+II.            Parenthesis checker.
+
+
+<script type="text/javascript">
+	function task1_online(){
+		var input = {
+			value: 1,
+			next: {
+				value: 2,
+				next: {
+					value: 3,
+					next: {
+						value : 5,
+						next: {
+							value: 6,
+							next:{
+								value: 8
+							}
+						}
+					}
+				}
+			}
+		}
+
+		var sorted = order(input);
+
+		function order(list){
+			var temp = list, current = list;
+			var odd, even, oddHead, evenHead;
+
+			while(current){
+				if (current.value & 1){
+					if (!oddHead){
+						odd = current;
+						oddHead = current;
+					} else {
+						odd.next = current;
+						odd = odd.next;
+					}
+				} else {
+					if (!evenHead){
+						even = current;
+						evenHead = current;
+					} else {
+						even.next = current;
+						even = even.next;
+					}
+				}
+
+				current = current.next;
+			}
+
+			even.next = oddHead;
+			odd.next = null;
+			return evenHead;
+		}
+	}
+	debugger;
+	task1_online();
+</script>
+</body>
+</html>

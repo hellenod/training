@@ -4,11 +4,55 @@
 	<title></title>
 </head>
 <body>
+Interview Round 1;
 Question 1: Check if a character link list is palindrome or not.
 
 Question 2: A sorted array has been rotated r times to the left. Find r in least possible time.
 
 Question 3: Clone a singly link list whose nodes contain, apart from next pointers, an extra pointer to any random node. The random pointer of a node N could be after N, before N or the node N itself.
+
+
+
+Interview Round 2(50-60 Minutes):
+
+Technical Interview
+
+Question 1: There is a big file of words which is dynamically changing. We are continuously adding some words into it. How would you keep track of top 10 trending words at each moment?
+
+Question 2: Write code for minHeapify() operation.
+
+Question 3: Design a data structure for the following operations:
+
+I.                Enqueue
+
+II.               Dequeue
+
+III.              Delete a given number(if it is present in the queue, else do nothing)
+
+IV.               isNumberPresent
+
+All these operations should take O(1) time.
+
+Question 4: Write a function that returns the length of the longest leaf-to-leaf path in a binary tree.
+
+
+Interview Round 3(60-70 Minutes):
+
+Technical Interview
+
+Question 1: There is a binary tree of size N. All nodes are numbered between 1-N(inclusive). There is a N*N integer matrix Arr[N][N], all elements are initialized to zero. So for all the nodes A and B, put Arr[A][B] = 1 if A is an ancestor of B (NOT just the immediate ancestor).
+
+Question 2: Find an element in a sorted rotated integer array.
+
+Question 3: There is a N*N integer matrix Arr[N][N]. From the row r and column c, we can go to any of the following three indices:
+
+I.                Arr[ r+1 ][ c-1 ] (valid only if c-1>=0)
+
+II.               Arr[ r+1 ][ c ]
+
+III.              Arr[ r+1 ][ c+1 ] (valid only if c+1 less or eq N-1)
+
+So if we start at any column index on row 0, what is the largest sum of any of the paths till row N-1.
 
 <script type="text/javascript">
 	function task1_1(){
@@ -55,9 +99,7 @@ Question 3: Clone a singly link list whose nodes contain, apart from next pointe
 
 			return true;
 		}
-	}
-	debugger;
-	task1_1();
+	}	
 
 	function task1_2(){
 		var input = [25, 26, 27, 28, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24];
@@ -80,7 +122,143 @@ Question 3: Clone a singly link list whose nodes contain, apart from next pointe
 		}
 	}
 	
-	task1_2();
+	function task2_2(){	
+		function Heap(arr){		
+			this.size = arr.length;
+			this.data = arr;
+
+			for(var i = Math.floor(this.size / 2); i >= 0; i--){
+				this.heapify(i);
+			}
+
+			return this;
+		}
+
+		Heap.prototype.heapify = function(i) {
+			var left = 2 * i,
+				right = 2 * i + 1,
+				largest = i;
+
+			if (left < this.size && this.data[left] > this.data[largest]) {
+				largest = left;
+			}
+
+			if (right < this.size && this.data[right] > this.data[largest]){
+				largest = right;
+			}
+
+			if (largest !== i){
+				this.swap(i, largest);
+				this.heapify(largest);
+			}
+
+		};
+
+		Heap.prototype.swap = function(a, b) {
+			var temp = this.data[a];
+			this.data[a] = this.data[b];
+			this.data[b] = temp
+		};
+	}
+
+	function task2_3(){
+		function Struct(){
+			this.queue = {};
+		}
+
+		Struct.prototype.enque = function(numer) {			
+		};
+	}
+
+
+
+	function task3_1(){
+		var input = {
+			value: 0,
+			left:{
+				value: 1,
+				left: {
+					value: 3
+				},
+				right: {
+					value: 4
+				}
+			},
+			right: {
+				value: 2,
+				left: {
+					value: 5
+				},
+				right: {
+					value: 6
+				}
+			}
+		}
+
+
+		var n = 7;
+		var arr = [];
+		for(var i = 0; i < n; i++){
+			arr.push([]);
+			for(var j = 0; j < n; j++){
+				arr[i].push(0);
+			}
+		}
+
+		setDescendants(input);
+
+		function setDescendants(input){
+
+			inner(input, [0]);
+			
+			function inner(node, keys){
+				if (node.left){
+					for (var i = 0; i < keys.length; i++){
+						arr[keys[i]][node.left.value] = 1;
+					}
+					keys.push(node.left.value);
+					inner(node.left, keys);
+					keys.pop();
+				}
+
+				if (node.right){
+					for (var i = 0; i < keys.length; i++){
+						arr[keys[i]][node.right.value] = 1;
+					}
+					keys.push(node.right.value);
+					inner(node.right, keys);
+					keys.pop();
+				}
+			}
+		}
+	}
+
+
+	function arrayToBst(){
+		var input = [1,2,3,4,5,6,7,8,9,10];
+		var root;
+
+		var root = inner(0, input.length - 1);
+
+		function inner(left, right){
+			if (left > right) return null;
+
+			if (left === right) { return { value : input[left] } }
+			
+			var mid = Math.floor((left + right) / 2);
+			var node = { value : input[mid] };
+			
+			node.left = inner(left, mid - 1);
+
+			node.right = inner(mid + 1, right);
+
+			return node;
+		}
+		var a = 0;
+	}		
+	arrayToBst();
+	
+	
 </script>
 </body>
-</html>
+</html>    	     

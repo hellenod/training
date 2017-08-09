@@ -69,8 +69,178 @@ II.            Parenthesis checker.
 			return evenHead;
 		}
 	}
-	debugger;
-	task1_online();
+
+
+function longestIncreasingSubsequence(){
+	var input = [10, 22, 9, 33, 21, 50, 41, 60, 80];
+
+	return findLis(input);
+
+	function findLis(arr){
+		var lengths = [];
+		var path = [];
+		var maxPath = -1, maxPathStart = -1;
+		for(var i = 0; i < arr.length; i++){
+			lengths.push(1);
+			path.push(-1);
+		}
+
+		for (var j = 1; j < input.length; j++){
+			for (var i = 0; i < j; i++){
+				 if (i === j) { continue; }
+				 if (lengths[j] < lengths[i] + 1 && arr[i] < arr[j]) {
+				 	lengths[j] = lengths[i] + 1;
+
+				 	if (lengths[j] > maxPath){
+				 		maxPath = lengths[j];
+				 		path[j] = i;
+				 		maxPathStart = j;
+				 	}
+				 }
+			}
+		}
+
+		var ans = [];
+		ans.push(input[maxPathStart]);
+		while(maxPathStart > 0){
+			ans.unshift(input[path[maxPathStart]]);
+			maxPathStart = path[maxPathStart];
+		}
+
+		return ans;
+	}
+}
+
+
+function Heap(arr){
+    	this.data = arr;
+    	this.size = arr.length;
+
+    	for(var i = this.size - 1; i >= 0; i--){
+    		this.heapify(i);
+    	}
+    }
+
+Heap.prototype.heapify = function(i) {
+	var min = i,
+		left = 2*i + 1,
+		right = 2*i + 2;
+
+	if (left < this.size && this.data[left].value < this.data[min].value) {
+		min = left;
+	}
+
+	if (right < this.size && this.data[right].value < this.data[min].value){
+		min = right;
+	}
+
+	if (i !== min){
+		this.swap(i, min);
+		this.heapify(min);
+	}
+};
+
+Heap.prototype.swap = function(a, b) {
+	var temp = this.data[a];
+	this.data[a] = this.data[b];
+	this.data[b] = temp;
+};
+
+function patienceSorting(){	
+	var input = [10, 22, 9, 33, 21, 50, 41, 60, 80, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+
+	return innerSort(input);
+
+	function innerSort(input){
+		var piles = [];
+
+		for(var i = 0; i < input.length; i++){
+			var theMostLeftPileIndex = findPile(piles, input[i]);
+			if (theMostLeftPileIndex === -1){
+				piles.push([]);
+				theMostLeftPileIndex = piles.length - 1;
+			}
+
+			piles[theMostLeftPileIndex].push(input[i]);
+		}
+
+		return mergeArrays(piles, piles.length, input.length);
+	}
+
+	function findPile(piles, number){
+		if (!piles.length) { return -1; }
+
+		return binary(0, piles.length - 1);
+
+		function binary(left, right){
+			var found = -1;
+			while(left <= right){
+				var mid = Math.floor( (left + right) / 2);
+				var pile = piles[mid],
+					topOfPile = pile[pile.length - 1];
+				if (topOfPile > number){
+					left = mid + 1;
+				} else{
+					found = mid;
+					right = mid - 1;
+				}
+			}
+
+			return found;
+		}
+		
+		for(var i = 0; i < piles.length; i++){
+			var pile = piles[i],
+				topOfPile = pile[pile.length - 1];
+
+			if (topOfPile < number){
+				return i;
+			} 						
+		}
+
+		return -1;
+	}	
+}
+
+function mergeArrays(input, n, k){	
+    return merge(input, n, k);
+
+    function merge(arrays, n, k){
+    	var heapData = [];
+    	for(var i = 0; i < n; i++){
+    		heapData.push({
+    			value: arrays[i][0],
+    			index: 0,
+    			array: i
+    		});
+    	}
+
+    	var heap = new Heap(heapData);
+
+    	var merged = [];
+
+    	while(merged.length < k){
+    		var min = heap.data[0];    		
+    		merged.push(min.value);
+
+    		var newHeapItem = {
+    			index: min.index + 1,
+    			value: arrays[min.array][min.index + 1],
+    			array: min.array
+    		};
+
+    		if (newHeapItem.value !== undefined){
+    			heap.data[0] = newHeapItem;    			
+    		} else {
+    			heap.data[0].value = Infinity;
+    		}
+    		heap.heapify(0);
+    	}
+
+    	return merged;
+    }   
+}
+
 </script>
 </body>
 </html>

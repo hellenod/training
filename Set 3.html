@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+Interview Round 1(50 mins)
+
+Question 1: You are given two linked lists whose nodes contain a digit as data member. Both lists represent a number. You have to add them and return the resultant list.
+Input: 9->9->3->4->5 and 8->9->1 (represent 99345 and 891)
+Output: 1->0->0->2->3->6
+My Solution: Reverse the linked lists. Create the new sum list which is reversed. Finally reverse the resultant list.
+
+Question 2: Interviewer asked to solve the above question without changing the original lists.
+My Solution: Count number of nodes in both lists. If equal then simply add two lists recursively. If not then advance a temp ptr which is a pointer to head of larger list by diff of nodes and then add the list pointed by temp and list 2. Make sure to keep track of carry. Add recursively. Propagate the carry in remaining elements of larger list. Was asked to code. Coded it.
+
+
+Interview Round 2(60 mins)
+
+Question 1: Delete nth node from end of a linked list in a single scan.
+
+Question 2: In a linked list, in addition to the next ptr, a random ptr is also present. Clone the linked list.
+Did it in O(n) but by modifying the linked list and then restoring it. Was asked to do it without making any modifications in the original list. Did that in O(n^2)
+
+Question 3: Two nodes of a BST are given. Print the path from 1st node to the 2nd node. You are also provided the parent pointers in addition to normal left and right pointers.
+
+
+Interview Round 3(1 hour)
+
+Question 1: An array of n integers is there in which the range of elements is n, i.e., the difference between maximum and minimum number is n. Find the repeating numbers.
+
+Question 2: An extension of Question 1. Was asked to find number of times each number is repeated.
+
+Question 3: There are n frames of m data element each. The data element in each frame is arranged in increasing order. You are provided m*n space in which you have to arrange all data in increasing order.
+
+My 1st solution was to use merge sort. He modified the question as only O(n) space is there and you need to send data in increasing order as fast as you can.
+My 2nd solution was to use min heap and construct it with the 1st element of all n frames. Min heap also contains extra field which signifies the frame number of data elements. This data structure can do the needful.
+
+
+Interview Round 4(1 hour)
+
+Question 1: Replace each element of an array with its greatest next integer in O(n).
+I couldn’t do it. I tried but it didn’t click. Not expected when you are in your last round.
+
+Question 2: Reverse every k nodes of a linked list.
+
+Well did that but was not finally selected……. 🙁
+<script type="text/javascript">
+	function task1_1(){
+		var numA = {
+				data: 9,
+				next: {
+					data: 9,
+					next: {
+						data: 3,
+						next:{
+							data: 4,
+							next:{
+								data: 5
+							}
+						}
+					}
+				}
+			},
+			numB = {
+				data: 8,
+				next:{
+					data: 9,
+					next: {
+						data: 1
+					}
+				}
+			};		
+
+		function add(numA, numB){
+			var reversedA = reverse(numA),
+				reversedB = reverse(numB),
+				temp = 0,
+				result = {},
+				resultHead = result;
+
+			while (reversedA || reversedB){
+				var num = temp + (reversedA ? reversedA.data : 0) + (reversedB ? reversedB.data : 0);
+				if (num > 9) {
+					temp = 1;
+					num = num - 10;
+				} else {
+					temp = 0;
+				}
+				result.data = num;
+				result.next = {};
+				result = result.next;
+
+				if (reversedA){
+					reversedA = reversedA.next;
+				}
+
+				if (reversedB){
+					reversedB = reversedB.next;
+				}
+			}
+
+			if (temp){
+				result.data = 1;
+			}
+
+			return reverse(resultHead);
+		}
+
+		function reverse(list){
+			var temp = list,
+				prev = null;
+
+			while(temp){
+				var next = temp.next;
+				temp.next = prev;
+				prev = temp;								
+				temp = next;				
+			}
+
+			return prev;
+		}
+	}
+	
+	function task2_1(){
+		var numA = {
+				data: 9,
+				next: {
+					data: 9,
+					next: {
+						data: 3,
+						next:{
+							data: 4,
+							next:{
+								data: 5
+							}
+						}
+					}
+				}
+			},
+			numB = {
+				data: 8,
+				next:{
+					data: 9,
+					next: {
+						data: 1
+					}
+				}
+			};
+		
+		var lengthA = length(numA),
+			lengthB = length(numB);
+		
+		var carry = 0, answer;		
+		if (lengthA === lengthB) {
+			answer = add(numA, numB);
+		} else if (lengthA > lengthB){
+			answer = add(find(numA, lengthA - lengthB), numB);
+			answer = listAddScalar(numA, carry, lengthA - lengthB);			
+		} else {
+			answer = add(numA, find(numB, lengthB - lengthA));			
+			answer = listAddScalar(numB, carry, lengthB - lengthA);
+			
+		}		
+
+
+		function add(a, b){
+			if (!a.next && !b.next){
+				var sum = a.data + b.data;
+				if (sum > 9){
+					carry = 1;
+					sum = sum - 10;
+				} else {
+					carry = 0;
+				}
+				return { data : sum };
+			}
+
+			var n = add(a.next, b.next);					
+
+			var sum = a.data + b.data + carry;
+			if (sum > 9){
+				carry = 1;
+				sum = sum - 10;
+			} else {
+				carry = 0;
+			}
+
+			return { 
+				data: sum,
+				next: n
+			}
+		}
+
+		function listAddScalar(a, b, skip){
+			var stack = [];
+			var cur = a;
+			while(skip--){
+				stack.push(cur);
+				cur = cur.next;
+			}
+
+			var carry = b;
+			while(stack.length){
+				var item = stack.pop();
+				item.data = item.data + carry;
+				if (item.data > 9){
+					item.data -= 10;
+					carry = 1;
+				} else {
+					carry = 0;
+				}
+			}
+
+			if (carry) {
+				return {
+					data: 1,
+					next: a
+				}
+			} else {
+				return a;
+			}
+		}
+
+		function length(num){
+			var length = 0;
+			var cur = num;
+			while(cur){
+				length++;
+				cur = cur.next;
+			}
+
+			return length;
+		}
+
+		function find(num, skip){
+			var cur = num;
+			while(skip--){
+				cur = cur.next;
+			}
+			return cur;
+		}
+	}
+	
+function task1_2(){
+	var list = {
+		data: 1,
+		next: {
+			data: 2,
+			next: {
+				data: 3,
+				next: {
+					data: 4,
+					next: {
+						data: 5,
+						next: {
+							data: 6
+						}
+					}
+				}
+			}
+		}
+	}
+
+	removeNthFromLast(list, 3);	
+
+	function removeNthFromLast(list, n){
+		var slow = 	list, fast = list;
+		while(n >= 0){
+			fast = fast.next;
+			n--;
+		}
+
+		while(fast){
+			slow = slow.next;
+			fast = fast.next;
+		}
+
+		slow.next = slow.next.next;
+	}
+}
+
+function task2_2(){
+	var node1 = { data: 1},
+		node2 = { data: 2},
+		node3 = { data: 3},
+		node4 = { data: 4},
+		node5 = { data: 5};
+	
+	node1.next = node2;
+	node2.next = node3;
+	node3.next = node4;
+	node4.next = node5;
+
+	node1.rand = node3;
+	node2.rand = node1;
+	node3.rand = node5;
+	node4.rand = node3;
+	node5.rand = node2;
+
+	var cloned = clone2(node1);
+
+	function clone(list){
+		var cur = list;
+		var copy, copyHead;
+		var mappings = {};
+		var index = 0;
+		while(cur){
+			if (!copy){
+				copy = { data: cur.data, next : {}, copy: '' };
+				copyHead = copy;
+			} else {
+				copy.data = cur.data;
+				copy.next = {};
+				copy.copy = '';
+			}
+			mappings[index] = cur.next;
+			index++;
+			cur = cur.next;
+			copy = copy.next;
+		}
+		
+		copy = null;
+
+		cur = list;
+		copy = copyHead;
+		while(cur){
+			var next = cur.next;
+			cur.next = copy;
+			copy.rand = cur;
+
+			cur = next;
+			copy = copy.next;
+		}
+
+		var k = 0;
+		copy = copyHead;
+
+		while(k < index){
+			cur = mappings[k];
+			k++;
+
+			copy.rand = copy.rand.rand.next;
+			copy = copy.next;
+		}
+
+		return copyHead;
+	}
+
+	function clone1(list){
+		var head = list, cur = list;
+
+		while(cur){
+			var next = cur.next;
+			var copy = { data: cur.data, copy: '' };
+			cur.next = copy;
+			copy.next = next;
+
+			cur = copy.next;
+		}
+
+		cur = list;
+
+		var copyHead = null, copy = null;
+		while(cur){
+			if (!copyHead){
+				copyHead = cur.next;
+				copy = copyHead;
+			}
+
+			copy.rand = cur.rand.next;
+
+			cur = cur.next ? cur.next.next : null;
+			copy.next = copy && copy.next ? copy.next.next : null;
+			copy = copy.next;
+		}
+
+		return copyHead;
+	}
+
+	function clone2(list){
+		var copy = null, head = list, copyHead = null, copy = null;
+
+		while(head){
+			if (!copyHead){
+				copyHead = { data: head.data, copy: '' };
+				copy = copyHead;
+			}
+
+			if (head.next){
+				copy.next = {};
+			}
+			copy.data = head.data;
+			copy.copy = '';
+			copy = copy.next;			
+			head = head.next;
+		}
+
+		head = list;
+
+		var currCopy = copyHead;
+
+		while(head){
+			var rand = head.rand;
+			var cur = list;
+			var index = 0;
+			var copy = copyHead;
+
+			while(cur !== rand){
+				cur = cur.next;
+				copy = copy.next;
+				index++;
+			}
+
+			currCopy.rand = copy;
+			head = head.next;
+			currCopy = currCopy.next;
+
+		}
+	}
+}
+
+
+function task3_2(){
+	var node1 = { data: 8 },
+		node2 = { data: 3 },
+		node3 = { data: 10 },
+		node4 = { data: 1 },
+		node5 = { data: 6 },
+		node6 = { data: 14 },
+		node7 = { data: 4 },
+		node8 = { data: 7},
+		node9 = { data: 13 };
+
+	node1.left = node2;
+	node1.right = node3;
+	node2.parent = node1;
+	node3.parent = node1;
+
+	node2.left =  node4;
+	node2.right = node5;
+	node4.parent = node2;
+	node5.parent = node2;
+
+	node3.right = node6;
+	node6.parent = node3;
+
+	node5.left = node7;
+	node5.right = node8;
+	node7.parent = node5;
+	node8.parent = node5;
+
+	node6.left = node9;
+	node9.parent = node6;
+
+	var path = findPath(node7, node9);
+	debugger;
+
+	function findPath(a, b){
+		var pathA = [],
+			pathB = [],
+			pathAKeys = {};
+
+		while(a){
+			pathA.push(a.data);
+			pathAKeys[a.data] = 1;
+
+			a = a.parent;
+		}
+
+		while(b){
+			if (!pathAKeys[b.data]){
+				pathB.unshift(b.data);			
+			} else{
+				var index = pathA.indexOf(b.data);
+				pathA = pathA.splice(0, index + 1);
+				break;
+			}
+
+			b = b.parent;
+		}
+
+		return pathA.concat(pathB);
+
+	}
+
+	function findRoot(a){
+		var root = a;
+		while(root.parent){
+			root = root.parent;
+		}
+
+		return root;
+	}
+}
+
+function task3_3(){
+	var arr = [
+		[1, 5, 8, 12],
+		[2, 4, 9, 12],
+		[0, 1, 10, 15]
+	];
+	
+	var sorted = merge(arr, 3, 4);	
+
+	function merge(arr, n, k){
+		var data = [];
+		for(var i = 0; i < n; i++){
+			data.push({
+				value: arr[i][0],
+				array: i,
+				index: 0
+			});
+		}
+
+		var construct = minHeap();
+		var heap = new construct(data);
+		var sorted = [];
+		i = 0;
+		while(i < n*k){
+			var min = heap.data[0];
+			sorted.push(min.value);
+
+			if (min.index < k - 1){
+				min.index++;
+				min.value = arr[min.array][min.index];
+			} else {
+				min.value = Infinity;
+			}
+
+			i++;
+			heap.heapify(0);
+		}
+
+		return sorted;
+	}
+}
+
+function minHeap(){
+	function MinHeap(arr){
+		this.data = arr;		
+		for (var i = Math.floor(this.data.length / 2); i >= 0; i-- ){
+			this.heapify(i)
+		}
+	}
+
+	MinHeap.prototype.heapify = function(i) {
+		var min = i,
+			left = 2*i + 1,
+			right = 2*i + 2;
+
+		if (left < this.data.length && this.data[left].value < this.data[min].value){
+			min = left;
+		}
+		if (right < this.data.length && this.data[right].value < this.data[min].value){
+			min = right;
+		}
+
+		if (min !== i){
+			this.swap(i, min);
+			this.heapify(min);
+		}
+	};
+
+	MinHeap.prototype.swap = function(a, b) {
+		var temp = this.data[a];
+		this.data[a] = this.data[b];
+		this.data[b] = temp;
+	};
+
+	return MinHeap;
+}
+
+function task1_4(){
+
+}
+
+function task2_4(){
+	var list = {
+		data: 1,
+		next:{
+			data:2,
+			next: {
+				data: 3,
+				next: {
+					data: 4,
+					next: {
+						data: 5,
+						next: {
+							data: 6,
+							next: {
+								data: 7,
+								next: {
+									data: 8,
+									next:{
+										data: 9
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	var reversed = reverse(list, 3);
+
+	function reverse(list, k){
+		var prev = null;
+		var prevNext = list;
+		var prevReversedTail = null;
+		var reversedHead = null;
+		while(prevNext){			
+			var reversed = reverseInner(prev, prevNext);
+			if (!reversedHead){
+				reversedHead = reversed.head;
+			} else {			
+				if (prevReversedTail) {
+					prevReversedTail.next = reversed.head;
+				}
+			}
+			prevReversedTail = reversed.tail;
+			prevNext = reversed.next;
+		}
+
+		return reversedHead;
+
+		function reverseInner(prev, node){
+			var i = 0;
+			var n = node;
+			var next;			
+			while(i < k && n){
+				next = n.next;
+				n.next = prev;
+				prev = n;
+				n = next;
+				i++;
+			}
+			prevNext = next;
+
+			return { 
+				head: prev,
+				tail: node,
+				next: next
+			};
+		}
+	}
+}
+debugger;
+task2_4();
+
+</script>
+</body>
+</html>

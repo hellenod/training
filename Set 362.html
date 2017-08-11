@@ -343,8 +343,8 @@ function Heap(arr){
 
 Heap.prototype.heapify = function(i) {
 	var min = i,
-		left = 2*i,
-		right = 2*i + 1;
+		left = 2*i + 1,
+		right = 2*i + 2;
 
 	if (left < this.size && this.data[left].value < this.data[min].value) {
 		min = left;
@@ -403,9 +403,12 @@ function task2_2(){
     			array: min.array
     		};
 
-    		if (newHeapItem.value !== undefined){
+    		if (newHeapItem.value !== undefined){    			
     			heap.data.push(newHeapItem);
     			heap.size++;
+
+    			// not correct
+    			// heapify all nodes to top
     			if (heap.size >= 2){
 	    			heap.heapify(heap.size - 2);
 	    		}

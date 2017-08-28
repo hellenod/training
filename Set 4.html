@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+
+Round 1:
+
+Question 1:- Given a 2D array containing only 0/1’s and each row is in sorted order. Find the row which contains maximum number of 1s.
+I was asked to code. Algo which I told was I will search position of first 1 in 1st row using binary search. And mark it. Now note that position check in 2nd row. If there is 1 for that position already found in 1st row, then binary search from 0 to that position else move to row number 3. Similarly continue further.
+
+
+Round 2:-
+
+Question 1:- Given a Binary tree and two nodes. Need to find the minimum ancestor, no parent nodes given.
+Each time when I told answer, they modified question little bit or removed some extra storage which I was taking.
+
+Question 2:- Given a Binary tree and two nodes. Need to find smallest path between them
+
+<script type="text/javascript">
+	function task1_1(){
+		var array = [
+			[0,0,0,0,0,0,0,0],
+			[0,0,0,0,1,1,1,1],
+			[0,0,0,0,0,0,1,1],
+			[0,0,0,0,0,0,0,0],
+			[0,0,1,1,1,1,1,1],
+			[1,1,1,1,1,1,1,1]
+		];		
+
+		function findRowWithMostOnes(array, n, k){
+			var rowNum = -1,
+				maxOnes = Infinity;
+			for (var i = 0; i < n; i++){
+				if (rowNum === -1 || array[i][maxOnes] === 1){
+					var found = binarySearch(array, i);
+					if (found !== null && found < maxOnes){
+						rowNum = i;
+						maxOnes = found;
+					}
+				}
+			}
+
+			return {
+				row: rowNum,
+				count : k - maxOnes
+			}
+		}
+
+		function binarySearch(array, i){
+			var a = array[i], left = 0, right = a.length - 1;
+			var found = null;
+			while(left <= right){				
+				var mid = Math.floor((left + right) / 2);
+				if (a[mid]) {
+					right = mid - 1;
+					found = mid;
+				} else {
+					left = mid + 1;
+				}
+			}
+
+			return found;
+		}
+	}
+
+function task1_2(){
+	var node1 = { data: 8 },
+		node2 = { data: 3 },
+		node3 = { data: 10 },
+		node4 = { data: 1 },
+		node5 = { data: 6 },
+		node6 = { data: 14 },
+		node7 = { data: 4 },
+		node8 = { data: 7},
+		node9 = { data: 13 };
+
+	node1.left = node2;
+	node1.right = node3;
+	node2.parent = node1;
+	node3.parent = node1;
+
+	node2.left =  node4;
+	node2.right = node5;
+	node4.parent = node2;
+	node5.parent = node2;
+
+	node3.right = node6;
+	node6.parent = node3;
+
+	node5.left = node7;
+	node5.right = node8;
+	node7.parent = node5;
+	node8.parent = node5;
+
+	node6.left = node9;
+	node9.parent = node6;
+	debugger;
+	var ancestor = findCommonAncestor2(node1, node4, node7);
+	debugger;
+	function findCommonAncestor(root, a, b){
+		var pathADict = {}, pathBDict = {};
+		var pathToA = findPathToNode(root, a);
+		var pathToB = findPathToNode(root, b);
+		var i = 0;
+		while (i < pathToB.length && i < pathToA.length && pathToA[i] === pathToB[i]){
+			i++;
+		}
+
+		return result;
+		
+	}
+
+	function findCommonAncestor2(root, a, b){
+		return inner(root);
+
+		function inner(r){
+			if (!r){
+				return null;
+			}
+
+			if (r === a || r === b){
+				return r;
+			}
+
+			var left = inner(r.left);
+			var right = inner(r.right);
+
+			if (left && right) { return r; }
+
+			return left || right;
+		}
+	}
+
+	function findPathToNode(root, node, dict, ignoreDict){
+		var path = [root.data];
+		var found = false;
+		inner(root, node, path);
+		return path;
+		function inner(n, node, path){
+			if (n === node) {
+				found = true;
+				return n;
+			}
+
+			if (n.left && !found){
+				path.push(n.left.data);
+				inner(n.left, node, path);
+				if (!found){
+					path.pop();
+				}
+			}
+			if (n.right && !found){
+				path.push(n.right.data);
+				inner(n.right, node, path);	
+				if (!found){
+					path.pop();
+				}
+			}
+
+			if (!n.left && !n.right){
+				return null;
+			}
+		}
+	}
+}
+debugger;
+task1_2();
+</script>
+</body>
+</html>

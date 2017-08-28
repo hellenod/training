@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+
+Written test 
+Very straight forward
+1. Given a linked list, sort without extra space.
+I wrote merge sort
+
+2. Methods to serialize & deserialize a tree ,must complete the below 2 monthods. File serialize (node *root) & node * deserialize(File f)
+
+
+First round
+1. Find diameter of a tree, I’ve seen the question here, But i didn’t recollect.. So solved my self..in some primitive way which made me write code with difficulty.
+
+2. Find a lowest common Ancestor, The variation was the tree was just a Binary Tree, Not BST, It was interesting to solve as i know only BST variation.
+
+<script type="text/javascript">
+function task1_w(){
+	var list = {
+		data: 9,
+		next: {
+			data: 8,
+			next: {
+				data: 7,
+				next: {
+					data: 6,
+					next:{
+						data : 5,
+						next: {
+							data: 4,
+							next: {
+								data: 3,
+								next: {
+									data: 2,
+									next: {
+										data: 1
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	var sorted = mergeSort(list);	
+
+	function mergeSort(list){
+		return inner(list);
+		function inner(node){				
+			if (!node){
+				return null;
+			}
+			if (!node.next){
+				return node;
+			}
+
+			var splitted = split(node),
+				left = splitted.left,
+				right = splitted.right;
+
+			left = inner(left);
+			right = inner(right);
+
+			return merge(left, right);
+		}
+
+		function merge(left, right){
+			
+			var merged = null, mergedHead = null;
+			while (left || right){
+				if (!left) {
+					if (!mergedHead) {
+						mergedHead = right;
+						merged = mergedHead;
+					} else {
+						merged.next = right;
+						merged = merged.next;
+					}
+					right = right.next;
+				}
+				if (!right) {
+					if (!mergedHead) {
+						mergedHead = left;
+						merged = mergedHead;
+					} else {
+						merged.next = left;
+						merged = merged.next;
+					}
+					left = left.next;
+				}
+
+				if (left && right){
+					if (left.data < right.data){
+						if (!mergedHead){
+							mergedHead = left;
+							merged = mergedHead;
+						} else {
+							merged.next = left;
+							merged = merged.next;
+						}
+						left = left.next;
+					} else {
+						if (!mergedHead){
+							mergedHead = right;
+							merged = mergedHead;
+						} else {
+							merged.next = right;
+							merged = merged.next;
+						}
+						right = right.next;
+					}
+				}
+
+			}
+			merged.next = null;
+			return mergedHead;
+
+		}
+
+		function split(source){
+			var left = source, right = 0;
+
+			if (!source.next){					
+				return {
+					left: source,
+					right: null
+				}
+			} else {
+				if (!source.next.next){
+					var right = source.next;
+					source.next = null;
+					return {
+						left: source,
+						right: right
+					}
+				}
+				var slow = source, fast = source;
+
+				while (fast) {						
+					fast = fast.next;
+					if (fast){
+						fast = fast.next;							
+						slow = slow.next;
+					}
+				}
+									
+				right = slow.next;
+				slow.next = null;
+				return {
+					left: source,
+					right: right
+				}
+			}
+		}
+	}
+}
+
+function task1_1(){
+	var input = {
+		value: 1,
+		left: {
+			value: 2,
+			left: {
+				value: 4
+			},
+			right: {
+				value: 5
+			}
+		},
+		right: {
+			value: 3
+		}
+	};
+	debugger;
+	return diameter(input);
+
+	function diameter(node){		
+		if (!node){
+			return 0;
+		}
+
+		var leftSubtreeDiameter = diameter(node.left);
+		var rightSubtreeDiameter = diameter(node.right);
+
+		var path = 1 + treeHeight(node.left) + treeHeight(node.right);
+
+		return Math.max.apply(Math, [ path, leftSubtreeDiameter, rightSubtreeDiameter ]);
+	}
+
+	function treeHeight(root){
+		if (!root){
+			return 0;
+		}
+		var stack = [root];
+		var height = 0;
+		stack.push('delimiter');
+		while(stack.length){
+			var item = stack.shift();
+			if (item === 'delimiter'){
+				height++;
+				if (stack.length && stack[stack.length - 1] !== 'delimiter'){
+					stack.push('delimiter');					
+				}
+			}  else {
+					if (item.left) { stack.push(item.left); }
+					if (item.right) { stack.push(item.right); }
+				}
+		}
+
+		return height;
+	}
+
+}
+
+task1_1();
+</script>
+</body>
+</html>

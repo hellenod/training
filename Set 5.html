@@ -18,6 +18,20 @@ First round
 
 2. Find a lowest common Ancestor, The variation was the tree was just a Binary Tree, Not BST, It was interesting to solve as i know only BST variation.
 
+
+
+Second round
+1. Given an array randomize it,
+2. Write all possible permutations of a array of size z.
+3. Given a 2-D array of 0s and 1s, find islands in it. An Island is 1s together. E.g (below there is U shaped island)
+0100001
+0100001
+0100001
+0100001
+0111111
+
+4. Write a method to check if a tree is BST or not. I wrote some stupid mistake in this code, probably that gave away my interview.
+
 <script type="text/javascript">
 function task1_w(){
 	var list = {
@@ -177,7 +191,7 @@ function task1_1(){
 			value: 3
 		}
 	};
-	debugger;
+	
 	return diameter(input);
 
 	function diameter(node){		
@@ -218,7 +232,161 @@ function task1_1(){
 
 }
 
-task1_1();
+function task1_2(){
+	var arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
+
+	var r = randomize(arr);
+	function randomize(a){
+		var n = a.length - 1,
+			size = n;
+		
+		while(n){
+			var index = Math.floor(Math.random() * size);
+			var temp = a[n];
+			a[n] = a[index];
+			a[index] = temp;
+			n--;
+		}
+
+		return a;
+	}
+}
+
+function task2_2(){
+	var arr = [1, 2, 3];
+
+	var perms = permutations(arr);
+	
+	function permutations(arr){
+		if (arr.length === 1) {
+			return [arr];
+		}
+
+		for(var i = 0; i < arr.length; i++){
+			var d = arr[i];
+			var newArr = [];
+			for (var j = 0; j < arr.length; j++){
+				if (j !== i) newArr.push(arr[j]);
+			}
+			var p = permutations(newArr);
+			var perms = [];
+			for (var j = 0; j < p.length; j++){
+				var left = p[j].slice();
+				left.unshift(d);
+				var right = p[j].slice();
+				right.push(d);
+
+				perms.push(left);
+				perms.push(right);
+			}		
+		}
+
+		return perms;
+	}
+}
+
+function task3_2(){
+	var m =  [[1, 1, 0, 0, 0],
+            [0, 1, 0, 0, 1],
+            [1, 0, 0, 1, 1],
+            [0, 0, 0, 0, 0],
+            [1, 0, 1, 0, 1]];
+    var t = countIslands(m, 5, 5);
+    debugger;
+    function countIslands(a, n, m){
+    	var islands = 0;
+
+    	for(var i = 0; i < n; i++){
+    		for(var j = 0; j < m; j++){
+    			if (a[i][j]) {
+    				islands++;
+    			}
+    		}
+    	}
+
+    	for (var i = 0; i < n; i++){
+    		for(var j = 0; j < m; j++){
+    			if (a[i][j] && partOfIsland(i, j)){
+    				islands--;
+    				a[i][j] = 0;
+    			}
+    		}
+    	}
+
+    	return islands;
+
+    	function partOfIsland(i, j){    		
+    		// above
+    		if (i >= 1){
+    			if (a[i - 1][j]) { return 1; }
+    		}
+    		//above right
+    		if (i >= 1 && j < m -1){
+    			if (a[i - 1][j + 1]) { return 1; }
+    		}
+    		// right
+    		if (j < m - 1){
+    			if (a[i][j + 1]) { return 1; }
+    		}
+    		//below right
+    		if (i < n - 1 && j < m -1){
+    			if (a[i + 1][j + 1]) { return 1; }
+    		}
+    		//below
+    		if (i < n - 1){
+    			if (a[i + 1][j]) { return 1; }
+    		}
+    		// below left
+    		if (i < n - 1 && j >= 1){
+    			if (a[i + 1][j - 1]) { return 1; }
+    		}
+    		// left
+    		if (j >= 1){
+    			if (a[i][j - 1]) { return 1; }
+    		}
+    	}
+    }
+}
+debugger;
+task4_2();
+
+function task4_2(){
+	var bst = {
+		data: 3,
+		right: {
+			data: 5
+		},
+		left: {
+			data: 2,
+			left: {
+				data: 1
+			},
+			right: {
+				data: 4
+			}
+		}
+	}
+
+	var maxLeft = { data: -Infinity },
+		maxRight = { data: Infinity };
+	
+	var isbst = isBst(bst, Infinity, -Infinity);
+	
+	function isBst(node, min, max){		
+		if (!node) {
+			return true;
+		}		
+		
+		if (node.data < min || node.data > max){
+			return false;
+		}
+
+		var left = isBst(node.left, min, node.data - 1);
+		var right = isBst(node.right, node.data + 1, max);
+
+		return left && right;
+	}
+}
 </script>
 </body>
 </html>
